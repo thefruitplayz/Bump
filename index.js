@@ -15,7 +15,7 @@ const client = new Client({
 
 const TOKEN = "YOUR_BOT_TOKEN";
 const CLIENT_ID = "YOUR_CLIENT_ID";
-const LOG_CHANNEL_ID = "1478557544736755884";
+const LOG_CHANNEL_ID = "CHANNEL_ID";
 const COOLDOWN = 2 * 60 * 60 * 1000; // 2 hours
 
 let data = {};
@@ -136,23 +136,31 @@ client.on('interactionCreate', async interaction => {
       });
     }
 
-    // Save new bump time
+    // Save cooldown
     data[guildId].lastBump = now;
     fs.writeFileSync("./data.json", JSON.stringify(data, null, 2));
 
+    const guild = interaction.guild;
+    const serverIcon = guild.iconURL({ dynamic: true, size: 1024 });
+
     const embed = new EmbedBuilder()
+      .setAuthor({
+        name: guild.name,
+        iconURL: serverIcon || undefined
+      })
       .setTitle(`🚀 ${data[guildId].name}`)
       .setDescription(`${data[guildId].description}\n\n🔗 ${data[guildId].link}`)
       .setColor(data[guildId].color || "#00ff00")
+      .setThumbnail(serverIcon || null)
       .setFooter({ text: `Bumped by ${interaction.user.tag}` })
       .setTimestamp();
 
     // SEND TO ALL SERVERS
-    client.guilds.cache.forEach(guild => {
-      const guildData = data[guild.id];
+    client.guilds.cache.forEach(g => {
+      const guildData = data[g.id];
       if (!guildData || !guildData.channel) return;
 
-      const channel = guild.channels.cache.get(guildData.channel);
+      const channel = g.channels.cache.get(guildData.channel);
       if (!channel) return;
 
       channel.send({ embeds: [embed] }).catch(() => {});
@@ -165,10 +173,11 @@ client.on('interactionCreate', async interaction => {
         .setTitle("📊 SmartBump Log")
         .setColor("#ff9900")
         .addFields(
-          { name: "Server", value: data[guildId].name, inline: true },
+          { name: "Server", value: guild.name, inline: true },
           { name: "User", value: interaction.user.tag, inline: true },
           { name: "Server ID", value: guildId }
         )
+        .setThumbnail(serverIcon || null)
         .setTimestamp();
 
       logChannel.send({ embeds: [logEmbed] }).catch(() => {});
