@@ -8,5 +8,5 @@ you can use bot hosting net to add this file and run own bump bot
 find these 
 const TOKEN = "YOUR_BOT_TOKEN";
 const CLIENT_ID = "YOUR_CLIENT_ID";
-const LOG_CHANNEL_ID = "channel id";
+const LOG_CHANNEL_ID = "CHANNEL_ID";
 
