@@ -4,7 +4,7 @@ free bump for your bot with logs and stuff
 # Free Hosting 
 you can use bot hosting net to add this file and run own bump bot
 
-# how to add token/ir
+# how to add token/id
 find these 
 const TOKEN = "YOUR_BOT_TOKEN";
 const CLIENT_ID = "YOUR_CLIENT_ID";
